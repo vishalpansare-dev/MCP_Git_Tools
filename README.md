@@ -19,11 +19,11 @@ This project is a sample implementation of a Spring Boot server with Model Conte
    ```
 2. Navigate to the project directory:
    ```bash
-   cd spring-boot-mcp-server-example
+   cd MCP_Git_Tools
    ```
 3. Build the project:
    ```bash
-   ./mvnw clean install
+   ./mvnw clean compile package
    ```
 
 ## Usage
