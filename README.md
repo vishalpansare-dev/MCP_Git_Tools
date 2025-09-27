@@ -49,14 +49,16 @@ The project uses an `mcp.json` configuration file to define MCP server settings.
          "command": "java",
          "args": [
             "-DACCESS_TOKEN=github_pat",
-            "-DGITHUB_OWNER=owner_name",
-            "-DGITHUB_REPO=repo_name",
+            "-DGITHUB_OWNER=git_owner",
+            "-DGITHUB_REPO=git_repo",
+            "-Dlogging.file.name=log.log",
             "-jar",
-            "target/mcp-git-tools-0.0.1-SNAPSHOT.jar"
+            "/target/mcp-git-tools-0.0.1-SNAPSHOT.jar"
          ]
       }
    }
 }
+
 
 ```
 
@@ -72,7 +74,6 @@ src/
     java/
       com/mcp/git/tools/
         GitTools.java
-        GitTools2.java
         MCPListApplication.java
     resources/
       application.properties
