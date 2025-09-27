@@ -44,17 +44,20 @@ The project uses an `mcp.json` configuration file to define MCP server settings.
 ### Example mcp.json
 ```json
 {
-  "servers": {
-    "githu": {
-      "command": "java",
-      "args": [
-        "-jar",
-        "/target/mcp-git-tools-0.0.1-SNAPSHOT.jar",
-        "-DACCESS_TOKEN=your_github_access_token"
-      ]
-    }
-  }
+   "servers": {
+      "github": {
+         "command": "java",
+         "args": [
+            "-DACCESS_TOKEN=github_pat",
+            "-DGITHUB_OWNER=owner_name",
+            "-DGITHUB_REPO=repo_name",
+            "-jar",
+            "target/mcp-git-tools-0.0.1-SNAPSHOT.jar"
+         ]
+      }
+   }
 }
+
 ```
 
 - `command`: The command to start the MCP server (Java in this case).
