@@ -238,10 +238,10 @@ public class GitTools {
                     boolean beforeEnd = (end == null) || !commitDate.isAfter(end);
                     if (afterStart && beforeEnd) {
                         result.add(Map.of(
-                            "hash", commit.getName(),
-                            "author", commit.getAuthorIdent().getName(),
-                            "date", commit.getAuthorIdent().getWhen().toString(),
-                            "message", commit.getFullMessage()
+                                "hash", commit.getName(),
+                                "author", commit.getAuthorIdent().getName(),
+                                "date", commit.getAuthorIdent().getWhen().toString(),
+                                "message", commit.getFullMessage()
                         ));
                     }
                 }
@@ -362,7 +362,7 @@ public class GitTools {
     public String cloneRepository(String repoUrl, String localPath) {
         UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
         if (creds == null) {
-            return "Token missing or expired";
+            return "Token missing or expired: " + creds;
         }
         try {
             Git.cloneRepository()
@@ -373,7 +373,7 @@ public class GitTools {
             return "Cloned successfully";
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
-                return "Token missing or expired";
+                return "Token missing or expired : " + creds;
             }
             return "Error cloning: " + e.getMessage();
         }
@@ -390,7 +390,7 @@ public class GitTools {
     public String gitPush(String repoPath, String remote, String branch) {
         UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
         if (creds == null) {
-            return "Token missing or expired";
+            return "Token missing or expired:" + creds;
         }
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
@@ -407,7 +407,7 @@ public class GitTools {
             }
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
-                return "Token missing or expired";
+                return "Token missing or expired: " + creds;
             }
             return "Error pushing: " + e.getMessage();
         }
@@ -424,7 +424,7 @@ public class GitTools {
     public String gitPull(String repoPath, String remote, String branch) {
         UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
         if (creds == null) {
-            return "Token missing or expired";
+            return "Token missing or expired: " + creds;
         }
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
@@ -441,7 +441,7 @@ public class GitTools {
             }
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
-                return "Token missing or expired";
+                return "Token missing or expired: " + creds;
             }
             return "Error pulling: " + e.getMessage();
         }
@@ -457,7 +457,7 @@ public class GitTools {
     public String gitFetch(String repoPath, String remote) {
         UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
         if (creds == null) {
-            return "Token missing or expired";
+            return "Token missing or expired: " + creds;
         }
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
@@ -469,7 +469,7 @@ public class GitTools {
             }
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
-                return "Token missing or expired";
+                return "Token missing or expired: " + creds;
             }
             return "Error fetching: " + e.getMessage();
         }
@@ -528,7 +528,7 @@ public class GitTools {
     public String reviewOpenPullRequests(String owner, String repo) {
         String token = resolveGitPat();
         if (token == null || token.isEmpty()) {
-            return "Token missing or expired";
+            return "Token missing or expired : " + token;
         }
         String apiBaseUrl = resolveApiBaseUrl();
         OkHttpClient client = new OkHttpClient();
@@ -547,8 +547,8 @@ public class GitTools {
             if (root.isArray()) {
                 for (JsonNode pr : root) {
                     sb.append("PR #").append(pr.get("number").asInt())
-                      .append(": ").append(pr.get("title").asText())
-                      .append(" by ").append(pr.get("user").get("login").asText()).append("\n");
+                            .append(": ").append(pr.get("title").asText())
+                            .append(" by ").append(pr.get("user").get("login").asText()).append("\n");
                     sb.append("Description: ").append(pr.get("body") != null ? pr.get("body").asText("") : "").append("\n");
                     sb.append("URL: ").append(pr.get("html_url").asText()).append("\n\n");
                 }
@@ -573,7 +573,7 @@ public class GitTools {
     public String approvePullRequest(String owner, String repo, int prNumber) {
         String token = resolveGitPat();
         if (token == null || token.isEmpty()) {
-            return "Token missing or expired";
+            return "Token missing or expired: " + token;
         }
         String apiBaseUrl = resolveApiBaseUrl();
         OkHttpClient client = new OkHttpClient();
@@ -598,5 +598,70 @@ public class GitTools {
         } catch (Exception e) {
             return "Error approving PR: " + e.getMessage();
         }
+    }
+
+    /**
+     * Utility to resolve GitHub owner and repo from env, system property, or application.properties
+     */
+    private String[] resolveOwnerRepo() {
+        String owner = System.getenv("GITHUB_OWNER");
+        if (owner != null && !owner.isEmpty()) {
+            String repo = System.getenv("GITHUB_REPO");
+            if (repo != null && !repo.isEmpty()) return new String[]{owner, repo};
+        }
+        owner = System.getProperty("GITHUB_OWNER");
+        if (owner != null && !owner.isEmpty()) {
+            String repo = System.getProperty("GITHUB_REPO");
+            if (repo != null && !repo.isEmpty()) return new String[]{owner, repo};
+        }
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                owner = prop.getProperty("github.owner");
+                String repo = prop.getProperty("github.repo");
+                if (owner != null && !owner.isEmpty() && repo != null && !repo.isEmpty()) {
+                    return new String[]{owner, repo};
+                }
+            }
+        } catch (IOException ignored) {}
+        // Try to extract from .git/config
+        try {
+            File configFile = new File(".git/config");
+            if (configFile.exists()) {
+                List<String> lines = java.nio.file.Files.readAllLines(configFile.toPath());
+                for (String line : lines) {
+                    line = line.trim();
+                    if (line.startsWith("url = ")) {
+                        String url = line.substring(6).replace(".git", "");
+                        // Support both HTTPS and SSH URLs
+                        String repoPath = url;
+                        if (url.startsWith("https://github.com/")) {
+                            repoPath = url.substring("https://github.com/".length());
+                        } else if (url.startsWith("git@github.com:")) {
+                            repoPath = url.substring("git@github.com:".length());
+                        }
+                        String[] parts = repoPath.split("/");
+                        if (parts.length == 2) {
+                            return new String[]{parts[0], parts[1]};
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    /**
+     * Shows all open PRs for the current repo configured via env, system property, or application.properties
+     * @return Summary of open PRs
+     */
+    @Tool(name = "show_current_repo_prs", description = "Shows all open PRs for the current repo configured via env, system property, or application.properties. Returns: List of PR summaries.")
+    public String showCurrentRepoPRs() {
+        String[] ownerRepo = resolveOwnerRepo();
+        if (ownerRepo == null) {
+            return "Owner or repo not configured in environment, system property, or application.properties.";
+        }
+        return reviewOpenPullRequests(ownerRepo[0], ownerRepo[1]);
     }
 }
