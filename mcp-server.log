@@ -1,0 +1,165 @@
+2025-09-27T13:45:08.856+05:30  INFO 12549 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Starting MCPListApplication v0.0.1-SNAPSHOT using Java 23.0.1 with PID 12549 (/Users/vishal_pansare/Kyros_Github/MCP_Git_Tools/target/mcp-git-tools-0.0.1-SNAPSHOT.jar started by vishal_pansare in /)
+2025-09-27T13:45:08.858+05:30  INFO 12549 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-09-27T13:45:09.201+05:30  INFO 12549 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Registering GitTools with the AI framework
+2025-09-27T13:45:09.508+05:30  INFO 12549 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable tools capabilities, notification: true
+2025-09-27T13:45:09.509+05:30  INFO 12549 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Registered tools: 19
+2025-09-27T13:45:09.509+05:30  INFO 12549 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable resources capabilities, notification: true
+2025-09-27T13:45:09.510+05:30  INFO 12549 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable prompts capabilities, notification: true
+2025-09-27T13:45:09.510+05:30  INFO 12549 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable completions capabilities
+2025-09-27T13:45:09.612+05:30  INFO 12549 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=githu, version=1.0.0]
+2025-09-27T13:45:09.614+05:30  WARN 12549 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+2025-09-27T13:45:09.660+05:30  INFO 12549 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Started MCPListApplication in 1.094 seconds (process running for 1.479)
+2025-09-27T13:45:36.394+05:30  INFO 13102 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Starting MCPListApplication v0.0.1-SNAPSHOT using Java 23.0.1 with PID 13102 (/Users/vishal_pansare/Kyros_Github/MCP_Git_Tools/target/mcp-git-tools-0.0.1-SNAPSHOT.jar started by vishal_pansare in /)
+2025-09-27T13:45:36.396+05:30  INFO 13102 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-09-27T13:45:36.717+05:30  INFO 13102 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Registering GitTools with the AI framework
+2025-09-27T13:45:37.028+05:30  INFO 13102 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable tools capabilities, notification: true
+2025-09-27T13:45:37.029+05:30  INFO 13102 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Registered tools: 19
+2025-09-27T13:45:37.029+05:30  INFO 13102 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable resources capabilities, notification: true
+2025-09-27T13:45:37.029+05:30  INFO 13102 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable prompts capabilities, notification: true
+2025-09-27T13:45:37.030+05:30  INFO 13102 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable completions capabilities
+2025-09-27T13:45:37.127+05:30  INFO 13102 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=github, version=1.0.0]
+2025-09-27T13:45:37.131+05:30  WARN 13102 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+2025-09-27T13:45:37.200+05:30  INFO 13102 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Started MCPListApplication in 1.089 seconds (process running for 1.424)
+2025-09-27T13:46:22.484+05:30  INFO 14097 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Starting MCPListApplication v0.0.1-SNAPSHOT using Java 23.0.1 with PID 14097 (/Users/vishal_pansare/Kyros_Github/MCP_Git_Tools/target/mcp-git-tools-0.0.1-SNAPSHOT.jar started by vishal_pansare in /)
+2025-09-27T13:46:22.485+05:30  INFO 14097 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-09-27T13:46:22.800+05:30  INFO 14097 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Registering GitTools with the AI framework
+2025-09-27T13:46:23.095+05:30  INFO 14097 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable tools capabilities, notification: true
+2025-09-27T13:46:23.098+05:30  INFO 14097 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Registered tools: 19
+2025-09-27T13:46:23.098+05:30  INFO 14097 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable resources capabilities, notification: true
+2025-09-27T13:46:23.098+05:30  INFO 14097 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable prompts capabilities, notification: true
+2025-09-27T13:46:23.099+05:30  INFO 14097 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable completions capabilities
+2025-09-27T13:46:23.185+05:30  INFO 14097 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=githu, version=1.0.0]
+2025-09-27T13:46:23.192+05:30  WARN 14097 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+2025-09-27T13:46:23.227+05:30  INFO 14097 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Started MCPListApplication in 1.036 seconds (process running for 1.36)
+2025-09-27T13:47:35.565+05:30  INFO 15645 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Starting MCPListApplication v0.0.1-SNAPSHOT using Java 23.0.1 with PID 15645 (/Users/vishal_pansare/Kyros_Github/MCP_Git_Tools/target/mcp-git-tools-0.0.1-SNAPSHOT.jar started by vishal_pansare in /)
+2025-09-27T13:47:35.566+05:30  INFO 15645 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-09-27T13:47:35.923+05:30  INFO 15645 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Registering GitTools with the AI framework
+2025-09-27T13:47:36.297+05:30  INFO 15645 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable tools capabilities, notification: true
+2025-09-27T13:47:36.298+05:30  INFO 15645 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Registered tools: 19
+2025-09-27T13:47:36.298+05:30  INFO 15645 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable resources capabilities, notification: true
+2025-09-27T13:47:36.299+05:30  INFO 15645 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable prompts capabilities, notification: true
+2025-09-27T13:47:36.299+05:30  INFO 15645 --- [mcp-git-tool] [main] o.s.a.m.s.a.McpServerAutoConfiguration   : Enable completions capabilities
+2025-09-27T13:47:36.399+05:30  INFO 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client initialize request - Protocol: 2025-06-18, Capabilities: ClientCapabilities[experimental=null, roots=RootCapabilities[listChanged=true], sampling=Sampling[]], Info: Implementation[name=githu, version=1.0.0]
+2025-09-27T13:47:36.402+05:30  WARN 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.server.McpAsyncServer                : Client requested unsupported protocol version: 2025-06-18, so the server will suggest the 2024-11-05 version instead
+2025-09-27T13:47:36.448+05:30  INFO 15645 --- [mcp-git-tool] [main] com.mcp.git.tools.MCPListApplication     : Started MCPListApplication in 1.176 seconds (process running for 1.52)
+2025-09-27T13:50:34.274+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Fetching git status for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+2025-09-27T13:50:34.516+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Git status fetched successfully for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+2025-09-27T13:50:38.982+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Creating new branch for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools with branchName: feature/new-feature and startPoint: main
+2025-09-27T13:50:39.025+05:30 ERROR 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Error creating branch for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+
+org.eclipse.jgit.api.errors.RefAlreadyExistsException: Ref feature/new-feature already exists
+	at org.eclipse.jgit.api.CreateBranchCommand.call(CreateBranchCommand.java:93) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at com.mcp.git.tools.GitTools.gitCreateBranch(GitTools.java:295) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.ai.tool.method.MethodToolCallback.callMethod(MethodToolCallback.java:166) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.tool.method.MethodToolCallback.call(MethodToolCallback.java:109) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.mcp.McpToolUtils.lambda$toSyncToolSpecification$0(McpToolUtils.java:175) ~[spring-ai-mcp-1.0.0.jar!/:1.0.0]
+	at io.modelcontextprotocol.server.McpServerFeatures$AsyncToolSpecification.lambda$fromSync$0(McpServerFeatures.java:249) ~[mcp-0.10.0.jar!/:0.10.0]
+	at reactor.core.publisher.MonoCallable.call(MonoCallable.java:72) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.publisher.FluxSubscribeOnCallable$CallableSubscribeOnSubscription.run(FluxSubscribeOnCallable.java:228) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:68) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:28) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1575) ~[na:na]
+
+2025-09-27T13:50:43.806+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Switching branches for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools to branchName: feature/new-feature
+2025-09-27T13:50:43.829+05:30 ERROR 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Error checking out branch for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+
+org.eclipse.jgit.api.errors.CheckoutConflictException: Checkout conflict with files: 
+src/main/java/com/mcp/git/tools/GitTools.java
+src/main/resources/application.properties
+	at org.eclipse.jgit.api.CheckoutCommand.call(CheckoutCommand.java:252) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at com.mcp.git.tools.GitTools.gitCheckout(GitTools.java:320) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.ai.tool.method.MethodToolCallback.callMethod(MethodToolCallback.java:166) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.tool.method.MethodToolCallback.call(MethodToolCallback.java:109) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.mcp.McpToolUtils.lambda$toSyncToolSpecification$0(McpToolUtils.java:175) ~[spring-ai-mcp-1.0.0.jar!/:1.0.0]
+	at io.modelcontextprotocol.server.McpServerFeatures$AsyncToolSpecification.lambda$fromSync$0(McpServerFeatures.java:249) ~[mcp-0.10.0.jar!/:0.10.0]
+	at reactor.core.publisher.MonoCallable.call(MonoCallable.java:72) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.publisher.FluxSubscribeOnCallable$CallableSubscribeOnSubscription.run(FluxSubscribeOnCallable.java:228) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:68) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:28) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1575) ~[na:na]
+Caused by: org.eclipse.jgit.errors.CheckoutConflictException: Checkout conflict with files: 
+src/main/java/com/mcp/git/tools/GitTools.java
+src/main/resources/application.properties
+	at org.eclipse.jgit.dircache.DirCacheCheckout.doCheckout(DirCacheCheckout.java:516) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at org.eclipse.jgit.dircache.DirCacheCheckout.checkout(DirCacheCheckout.java:480) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at org.eclipse.jgit.api.CheckoutCommand.call(CheckoutCommand.java:248) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	... 16 common frames omitted
+
+2025-09-27T13:50:49.691+05:30 ERROR 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.spec.McpServerSession                : No handler registered for notification method: notifications/cancelled
+2025-09-27T13:50:49.691+05:30 ERROR 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.spec.McpServerSession                : No handler registered for notification method: notifications/cancelled
+2025-09-27T13:50:49.691+05:30 ERROR 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.spec.McpServerSession                : No handler registered for notification method: notifications/cancelled
+2025-09-27T13:51:40.259+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Fetching git status for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+2025-09-27T13:51:40.276+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Git status fetched successfully for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+2025-09-27T13:51:46.171+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Creating new branch for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools with branchName: feature/new-feature and startPoint: main
+2025-09-27T13:51:46.176+05:30 ERROR 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Error creating branch for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+
+org.eclipse.jgit.api.errors.RefAlreadyExistsException: Ref feature/new-feature already exists
+	at org.eclipse.jgit.api.CreateBranchCommand.call(CreateBranchCommand.java:93) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at com.mcp.git.tools.GitTools.gitCreateBranch(GitTools.java:295) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.ai.tool.method.MethodToolCallback.callMethod(MethodToolCallback.java:166) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.tool.method.MethodToolCallback.call(MethodToolCallback.java:109) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.mcp.McpToolUtils.lambda$toSyncToolSpecification$0(McpToolUtils.java:175) ~[spring-ai-mcp-1.0.0.jar!/:1.0.0]
+	at io.modelcontextprotocol.server.McpServerFeatures$AsyncToolSpecification.lambda$fromSync$0(McpServerFeatures.java:249) ~[mcp-0.10.0.jar!/:0.10.0]
+	at reactor.core.publisher.MonoCallable.call(MonoCallable.java:72) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.publisher.FluxSubscribeOnCallable$CallableSubscribeOnSubscription.run(FluxSubscribeOnCallable.java:228) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:68) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:28) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1575) ~[na:na]
+
+2025-09-27T13:51:54.626+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Switching branches for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools to branchName: feature/new-feature
+2025-09-27T13:51:54.643+05:30 ERROR 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Error checking out branch for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+
+org.eclipse.jgit.api.errors.CheckoutConflictException: Checkout conflict with files: 
+src/main/java/com/mcp/git/tools/GitTools.java
+src/main/resources/application.properties
+	at org.eclipse.jgit.api.CheckoutCommand.call(CheckoutCommand.java:252) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at com.mcp.git.tools.GitTools.gitCheckout(GitTools.java:320) ~[!/:0.0.1-SNAPSHOT]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.ai.tool.method.MethodToolCallback.callMethod(MethodToolCallback.java:166) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.tool.method.MethodToolCallback.call(MethodToolCallback.java:109) ~[spring-ai-model-1.0.0.jar!/:1.0.0]
+	at org.springframework.ai.mcp.McpToolUtils.lambda$toSyncToolSpecification$0(McpToolUtils.java:175) ~[spring-ai-mcp-1.0.0.jar!/:1.0.0]
+	at io.modelcontextprotocol.server.McpServerFeatures$AsyncToolSpecification.lambda$fromSync$0(McpServerFeatures.java:249) ~[mcp-0.10.0.jar!/:0.10.0]
+	at reactor.core.publisher.MonoCallable.call(MonoCallable.java:72) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.publisher.FluxSubscribeOnCallable$CallableSubscribeOnSubscription.run(FluxSubscribeOnCallable.java:228) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:68) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at reactor.core.scheduler.SchedulerTask.call(SchedulerTask.java:28) ~[reactor-core-3.7.6.jar!/:3.7.6]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:304) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1575) ~[na:na]
+Caused by: org.eclipse.jgit.errors.CheckoutConflictException: Checkout conflict with files: 
+src/main/java/com/mcp/git/tools/GitTools.java
+src/main/resources/application.properties
+	at org.eclipse.jgit.dircache.DirCacheCheckout.doCheckout(DirCacheCheckout.java:516) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at org.eclipse.jgit.dircache.DirCacheCheckout.checkout(DirCacheCheckout.java:480) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	at org.eclipse.jgit.api.CheckoutCommand.call(CheckoutCommand.java:248) ~[org.eclipse.jgit-6.9.0.202403050737-r.jar!/:6.9.0.202403050737-r]
+	... 16 common frames omitted
+
+2025-09-27T13:52:07.049+05:30 ERROR 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.spec.McpServerSession                : No handler registered for notification method: notifications/cancelled
+2025-09-27T13:52:07.050+05:30 ERROR 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.spec.McpServerSession                : No handler registered for notification method: notifications/cancelled
+2025-09-27T13:52:07.050+05:30 ERROR 15645 --- [mcp-git-tool] [pool-2-thread-1] i.m.spec.McpServerSession                : No handler registered for notification method: notifications/cancelled
+2025-09-27T13:52:37.806+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Fetching git status for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+2025-09-27T13:52:37.818+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Git status fetched successfully for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+2025-09-27T13:52:43.482+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Creating new branch for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools with branchName: feature/auto and startPoint: main
+2025-09-27T13:52:43.503+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Branch created successfully for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools
+2025-09-27T13:52:47.401+05:30  INFO 15645 --- [mcp-git-tool] [boundedElastic-2] com.mcp.git.tools.GitTools               : Staging files for repository at path: /Users/vishal_pansare/Kyros_Github/MCP_Git_Tools with files: [src/main/resources/application.properties, mcp-server.log, src/main/java/com/mcp/git/tools/GitTools.java, src/main/java/com/mcp/git/tools/MCPListApplication.java, README.md]

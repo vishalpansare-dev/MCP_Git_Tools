@@ -10,12 +10,20 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import java.io.File;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import okhttp3.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class GitTools {
 
-    @Value("${git.pat}")
-    private String gitPat;
+    private static final Logger logger = LoggerFactory.getLogger(GitTools.class);
 
     /**
      * Shows the working tree status
@@ -24,6 +32,7 @@ public class GitTools {
      */
     @Tool(name = "git_status", description = "Shows the working tree status. Input: repo_path (string): Path to Git repository. Returns: Current status of working directory as text output.")
     public String gitStatus(String repoPath) {
+        logger.info("Fetching git status for repository at path: {}", repoPath);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -36,11 +45,14 @@ public class GitTools {
                 if (!status.getRemoved().isEmpty()) sb.append("Removed: ").append(status.getRemoved()).append("\n");
                 if (!status.getUntracked().isEmpty()) sb.append("Untracked: ").append(status.getUntracked()).append("\n");
                 if (sb.isEmpty()) sb.append("Working directory clean\n");
+                logger.info("Git status fetched successfully for repository at path: {}", repoPath);
                 return sb.toString();
             }
         } catch (RepositoryNotFoundException e) {
+            logger.error("Repository not found at path: {}", repoPath, e);
             return "Repository not found at: " + repoPath;
         } catch (Exception e) {
+            logger.error("Error reading git status for repository at path: {}", repoPath, e);
             return "Error reading git status: " + e.getMessage();
         }
     }
@@ -53,7 +65,7 @@ public class GitTools {
      */
     @Tool(name = "git_diff_unstaged", description = "Shows changes in working directory not yet staged. Inputs: repo_path (string), context_lines (number, optional). Returns: Diff output of unstaged changes.")
     public String gitDiffUnstaged(String repoPath, Integer contextLines) {
-        // JGit does not provide a direct diff output as text, so we use DiffCommand and format manually
+        logger.info("Fetching unstaged diff for repository at path: {}", repoPath);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -69,9 +81,11 @@ public class GitTools {
                     sb.append(diff.getChangeType()).append(": ").append(diff.getNewPath()).append("\n");
                 }
                 if (sb.isEmpty()) sb.append("No unstaged changes\n");
+                logger.info("Unstaged diff fetched successfully for repository at path: {}", repoPath);
                 return sb.toString();
             }
         } catch (Exception e) {
+            logger.error("Error reading unstaged diff for repository at path: {}", repoPath, e);
             return "Error reading unstaged diff: " + e.getMessage();
         }
     }
@@ -84,7 +98,7 @@ public class GitTools {
      */
     @Tool(name = "git_diff_staged", description = "Shows changes that are staged for commit. Inputs: repo_path (string), context_lines (number, optional). Returns: Diff output of staged changes.")
     public String gitDiffStaged(String repoPath, Integer contextLines) {
-        // JGit does not provide a direct staged diff output as text, so we use DiffCommand and format manually
+        logger.info("Fetching staged diff for repository at path: {}", repoPath);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -107,9 +121,11 @@ public class GitTools {
                     sb.append(diff.getChangeType()).append(": ").append(diff.getNewPath()).append("\n");
                 }
                 if (sb.isEmpty()) sb.append("No staged changes\n");
+                logger.info("Staged diff fetched successfully for repository at path: {}", repoPath);
                 return sb.toString();
             }
         } catch (Exception e) {
+            logger.error("Error reading staged diff for repository at path: {}", repoPath, e);
             return "Error reading staged diff: " + e.getMessage();
         }
     }
@@ -123,6 +139,7 @@ public class GitTools {
      */
     @Tool(name = "git_diff", description = "Shows differences between branches or commits. Inputs: repo_path (string), target (string), context_lines (number, optional). Returns: Diff output comparing current state with target.")
     public String gitDiff(String repoPath, String target, Integer contextLines) {
+        logger.info("Fetching diff for repository at path: {} with target: {}", repoPath, target);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -138,9 +155,11 @@ public class GitTools {
                     sb.append(diff.getChangeType()).append(": ").append(diff.getNewPath()).append("\n");
                 }
                 if (sb.isEmpty()) sb.append("No diff with target\n");
+                logger.info("Diff fetched successfully for repository at path: {} with target: {}", repoPath, target);
                 return sb.toString();
             }
         } catch (Exception e) {
+            logger.error("Error reading diff for repository at path: {} with target: {}", repoPath, target, e);
             return "Error reading diff: " + e.getMessage();
         }
     }
@@ -153,13 +172,16 @@ public class GitTools {
      */
     @Tool(name = "git_commit", description = "Records changes to the repository. Inputs: repo_path (string), message (string). Returns: Confirmation with new commit hash.")
     public String gitCommit(String repoPath, String message) {
+        logger.info("Committing changes for repository at path: {} with message: {}", repoPath, message);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
                 var commit = git.commit().setMessage(message).call();
+                logger.info("Changes committed successfully for repository at path: {}", repoPath);
                 return "Committed: " + commit.getName();
             }
         } catch (Exception e) {
+            logger.error("Error committing changes for repository at path: {}", repoPath, e);
             return "Error committing: " + e.getMessage();
         }
     }
@@ -172,15 +194,18 @@ public class GitTools {
      */
     @Tool(name = "git_add", description = "Adds file contents to the staging area. Inputs: repo_path (string), files (string[]). Returns: Confirmation of staged files.")
     public String gitAdd(String repoPath, List<String> files) {
+        logger.info("Staging files for repository at path: {} with files: {}", repoPath, files);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
                 for (String file : files) {
                     git.add().addFilepattern(file).call();
                 }
+                logger.info("Files staged successfully for repository at path: {}", repoPath);
                 return "Staged files: " + files;
             }
         } catch (Exception e) {
+            logger.error("Error staging files for repository at path: {}", repoPath, e);
             return "Error staging files: " + e.getMessage();
         }
     }
@@ -192,13 +217,16 @@ public class GitTools {
      */
     @Tool(name = "git_reset", description = "Unstages all staged changes. Input: repo_path (string). Returns: Confirmation of reset operation.")
     public String gitReset(String repoPath) {
+        logger.info("Resetting staged changes for repository at path: {}", repoPath);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
                 git.reset().setMode(org.eclipse.jgit.api.ResetCommand.ResetType.MIXED).call();
+                logger.info("Staged changes reset successfully for repository at path: {}", repoPath);
                 return "Unstaged all changes.";
             }
         } catch (Exception e) {
+            logger.error("Error resetting staged changes for repository at path: {}", repoPath, e);
             return "Error resetting: " + e.getMessage();
         }
     }
@@ -213,6 +241,7 @@ public class GitTools {
      */
     @Tool(name = "git_log", description = "Shows the commit logs with optional date filtering. Inputs: repo_path (string), max_count (number, optional), start_timestamp (string, optional), end_timestamp (string, optional). Returns: Array of commit entries with hash, author, date, and message.")
     public List<Map<String, String>> gitLog(String repoPath, Integer maxCount, String startTimestamp, String endTimestamp) {
+        logger.info("Fetching commit logs for repository at path: {} with maxCount: {}, startTimestamp: {}, endTimestamp: {}", repoPath, maxCount, startTimestamp, endTimestamp);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -233,16 +262,18 @@ public class GitTools {
                     boolean beforeEnd = (end == null) || !commitDate.isAfter(end);
                     if (afterStart && beforeEnd) {
                         result.add(Map.of(
-                            "hash", commit.getName(),
-                            "author", commit.getAuthorIdent().getName(),
-                            "date", commit.getAuthorIdent().getWhen().toString(),
-                            "message", commit.getFullMessage()
+                                "hash", commit.getName(),
+                                "author", commit.getAuthorIdent().getName(),
+                                "date", commit.getAuthorIdent().getWhen().toString(),
+                                "message", commit.getFullMessage()
                         ));
                     }
                 }
+                logger.info("Commit logs fetched successfully for repository at path: {}", repoPath);
                 return result;
             }
         } catch (Exception e) {
+            logger.error("Error fetching commit logs for repository at path: {}", repoPath, e);
             return List.of(Map.of("error", "Error reading log: " + e.getMessage()));
         }
     }
@@ -256,6 +287,7 @@ public class GitTools {
      */
     @Tool(name = "git_create_branch", description = "Creates a new branch. Inputs: repo_path (string), branch_name (string), start_point (string, optional). Returns: Confirmation of branch creation.")
     public String gitCreateBranch(String repoPath, String branchName, String startPoint) {
+        logger.info("Creating new branch for repository at path: {} with branchName: {} and startPoint: {}", repoPath, branchName, startPoint);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -264,9 +296,11 @@ public class GitTools {
                 } else {
                     git.branchCreate().setName(branchName).call();
                 }
+                logger.info("Branch created successfully for repository at path: {}", repoPath);
                 return "Created branch: " + branchName;
             }
         } catch (Exception e) {
+            logger.error("Error creating branch for repository at path: {}", repoPath, e);
             return "Error creating branch: " + e.getMessage();
         }
     }
@@ -279,13 +313,16 @@ public class GitTools {
      */
     @Tool(name = "git_checkout", description = "Switches branches. Inputs: repo_path (string), branch_name (string). Returns: Confirmation of branch switch.")
     public String gitCheckout(String repoPath, String branchName) {
+        logger.info("Switching branches for repository at path: {} to branchName: {}", repoPath, branchName);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
                 git.checkout().setName(branchName).call();
+                logger.info("Switched branches successfully for repository at path: {}", repoPath);
                 return "Checked out branch: " + branchName;
             }
         } catch (Exception e) {
+            logger.error("Error checking out branch for repository at path: {}", repoPath, e);
             return "Error checking out branch: " + e.getMessage();
         }
     }
@@ -298,6 +335,7 @@ public class GitTools {
      */
     @Tool(name = "git_show", description = "Shows the contents of a commit. Inputs: repo_path (string), revision (string). Returns: Contents of the specified commit.")
     public String gitShow(String repoPath, String revision) {
+        logger.info("Showing commit contents for repository at path: {} with revision: {}", repoPath, revision);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -312,9 +350,11 @@ public class GitTools {
                 sb.append("Date: ").append(revCommit.getAuthorIdent().getWhen()).append("\n");
                 sb.append("\n").append(revCommit.getFullMessage()).append("\n");
                 walk.dispose();
+                logger.info("Commit contents shown successfully for repository at path: {}", repoPath);
                 return sb.toString();
             }
         } catch (Exception e) {
+            logger.error("Error showing commit contents for repository at path: {}", repoPath, e);
             return "Error showing commit: " + e.getMessage();
         }
     }
@@ -329,6 +369,7 @@ public class GitTools {
      */
     @Tool(name = "git_branch", description = "List Git branches. Inputs: repo_path (string), branch_type (string), contains (string, optional), not_contains (string, optional). Returns: List of branches.")
     public List<String> gitBranch(String repoPath, String branchType, String contains, String notContains) {
+        logger.info("Listing branches for repository at path: {} with branchType: {}, contains: {}, notContains: {}", repoPath, branchType, contains, notContains);
         try {
             FileRepositoryBuilder builder = new FileRepositoryBuilder();
             try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
@@ -340,10 +381,338 @@ public class GitTools {
                 } else {
                     git.branchList().call().forEach(ref -> branches.add(ref.getName()));
                 }
+                logger.info("Branches listed successfully for repository at path: {}", repoPath);
                 return branches;
             }
         } catch (Exception e) {
+            logger.error("Error listing branches for repository at path: {}", repoPath, e);
             return List.of("Error listing branches: " + e.getMessage());
         }
+    }
+
+    /**
+     * Clones a repository to a local path
+     * @param repoUrl URL of the remote repository
+     * @param localPath Path to clone repo on local
+     * @return Status of clone operation
+     */
+    @Tool(name = "git_clone", description = "Clone repo from git. Input: repo_path (string): Path to Git repository localPath (string): path to clone repo on local. Returns: Current status of clone repo.")
+    public String cloneRepository(String repoUrl, String localPath) {
+        logger.info("Cloning repository from URL: {} to local path: {}", repoUrl, localPath);
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired: " + creds;
+        }
+        try {
+            Git.cloneRepository()
+                    .setURI(repoUrl)
+                    .setDirectory(new File(localPath))
+                    .setCredentialsProvider(creds)
+                    .call();
+            logger.info("Repository cloned successfully from URL: {} to local path: {}", repoUrl, localPath);
+            return "Cloned successfully";
+        } catch (Exception e) {
+            logger.error("Error cloning repository from URL: {} to local path: {}", repoUrl, localPath, e);
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired : " + creds;
+            }
+            return "Error cloning: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Pushes local commits to the remote repository
+     * @param repoPath Path to local Git repository
+     * @param remote Remote name (default: origin)
+     * @param branch Branch name (optional)
+     * @return Status of push operation
+     */
+    @Tool(name = "git_push", description = "Pushes local commits to the remote repository. Inputs: repo_path (string), remote (string, optional), branch (string, optional). Returns: Status of push operation.")
+    public String gitPush(String repoPath, String remote, String branch) {
+        logger.info("Pushing commits for repository at path: {} to remote: {} branch: {}", repoPath, remote, branch);
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired:" + creds;
+        }
+        try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
+                var pushCmd = git.push().setCredentialsProvider(creds);
+                if (remote != null && !remote.isEmpty()) pushCmd.setRemote(remote);
+                if (branch != null && !branch.isEmpty()) pushCmd.add(branch);
+                var result = pushCmd.call();
+                StringBuilder sb = new StringBuilder();
+                for (var res : result) {
+                    sb.append(res.getMessages()).append("\n");
+                }
+                logger.info("Push completed successfully for repository at path: {}", repoPath);
+                return sb.length() > 0 ? sb.toString() : "Push completed.";
+            }
+        } catch (Exception e) {
+            logger.error("Error pushing commits for repository at path: {}", repoPath, e);
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired: " + creds;
+            }
+            return "Error pushing: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Pulls changes from the remote repository
+     * @param repoPath Path to local Git repository
+     * @param remote Remote name (default: origin)
+     * @param branch Branch name (optional)
+     * @return Status of pull operation
+     */
+    @Tool(name = "git_pull", description = "Pulls changes from the remote repository. Inputs: repo_path (string), remote (string, optional), branch (string, optional). Returns: Status of pull operation.")
+    public String gitPull(String repoPath, String remote, String branch) {
+        logger.info("Pulling changes for repository at path: {} from remote: {} branch: {}", repoPath, remote, branch);
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired: " + creds;
+        }
+        try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
+                var pullCmd = git.pull().setCredentialsProvider(creds);
+                if (remote != null && !remote.isEmpty()) pullCmd.setRemote(remote);
+                if (branch != null && !branch.isEmpty()) pullCmd.setRemoteBranchName(branch);
+                var result = pullCmd.call();
+                if (result.isSuccessful()) {
+                    logger.info("Pull completed successfully for repository at path: {}", repoPath);
+                    return "Pull completed.";
+                } else {
+                    logger.warn("Pull completed with warnings for repository at path: {}: {}", repoPath, result.getMergeResult().toString());
+                    return "Pull completed with warnings: " + result.getMergeResult().toString();
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error pulling changes for repository at path: {}", repoPath, e);
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired: " + creds;
+            }
+            return "Error pulling: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Fetches changes from the remote repository
+     * @param repoPath Path to local Git repository
+     * @param remote Remote name (default: origin)
+     * @return Status of fetch operation
+     */
+    @Tool(name = "git_fetch", description = "Fetches changes from the remote repository. Inputs: repo_path (string), remote (string, optional). Returns: Status of fetch operation.")
+    public String gitFetch(String repoPath, String remote) {
+        logger.info("Fetching changes for repository at path: {} from remote: {}", repoPath, remote);
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired: " + creds;
+        }
+        try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
+                var fetchCmd = git.fetch().setCredentialsProvider(creds);
+                if (remote != null && !remote.isEmpty()) fetchCmd.setRemote(remote);
+                var result = fetchCmd.call();
+                logger.info("Fetch completed successfully for repository at path: {}", repoPath);
+                return "Fetch completed: " + result.getMessages();
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching changes for repository at path: {}", repoPath, e);
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired: " + creds;
+            }
+            return "Error fetching: " + e.getMessage();
+        }
+    }
+
+    private String resolveGitPat() {
+        // 1. Check environment variable
+        String token = System.getenv("ACCESS_TOKEN");
+        if (token != null && !token.isEmpty()) return token;
+        // 2. Check system property
+        token = System.getProperty("ACCESS_TOKEN");
+        if (token != null && !token.isEmpty()) return token;
+        // 3. Check application.properties
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                token = prop.getProperty("git.pat");
+                if (token != null && !token.isEmpty()) return token;
+            }
+        } catch (IOException ignored) {}
+        return null;
+    }
+
+    private UsernamePasswordCredentialsProvider getCredentialsProvider() {
+        String pat = resolveGitPat();
+        if (pat == null || pat.isEmpty()) {
+            return null;
+        }
+        return new UsernamePasswordCredentialsProvider(pat, "");
+    }
+
+    private String resolveApiBaseUrl() {
+        String url = System.getenv("GITHUB_API_BASE_URL");
+        if (url != null && !url.isEmpty()) return url;
+        url = System.getProperty("GITHUB_API_BASE_URL");
+        if (url != null && !url.isEmpty()) return url;
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                url = prop.getProperty("github.api.base.url");
+                if (url != null && !url.isEmpty()) return url;
+            }
+        } catch (IOException ignored) {}
+        return "https://api.github.com";
+    }
+
+    /**
+     * Reviews open pull requests for a repository and returns a summary for each.
+     * @param owner GitHub repository owner
+     * @param repo GitHub repository name
+     * @return Summary of open PRs (title, author, description, etc.)
+     */
+    @Tool(name = "review_open_pull_requests", description = "Reviews open pull requests for a repository and returns a summary for each. Inputs: owner (string), repo (string). Returns: List of PR summaries.")
+    public String reviewOpenPullRequests(String owner, String repo) {
+        String token = resolveGitPat();
+        if (token == null || token.isEmpty()) {
+            return "Token missing or expired : " + token;
+        }
+        String apiBaseUrl = resolveApiBaseUrl();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(apiBaseUrl + "/repos/" + owner + "/" + repo + "/pulls?state=open")
+                .header("Authorization", "Bearer " + token)
+                .header("Accept", "application/vnd.github+json")
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return "Error fetching PRs: " + response.code() + " " + response.message();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.body().string());
+            StringBuilder sb = new StringBuilder();
+            if (root.isArray()) {
+                for (JsonNode pr : root) {
+                    sb.append("PR #").append(pr.get("number").asInt())
+                            .append(": ").append(pr.get("title").asText())
+                            .append(" by ").append(pr.get("user").get("login").asText()).append("\n");
+                    sb.append("Description: ").append(pr.get("body") != null ? pr.get("body").asText("") : "").append("\n");
+                    sb.append("URL: ").append(pr.get("html_url").asText()).append("\n\n");
+                }
+                if (sb.length() == 0) sb.append("No open PRs found.\n");
+            } else {
+                sb.append("Unexpected response format from GitHub API.");
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return "Error reviewing PRs: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Approves a pull request on GitHub
+     * @param owner GitHub repository owner
+     * @param repo GitHub repository name
+     * @param prNumber Pull request number
+     * @return Status of approval
+     */
+    @Tool(name = "approve_pull_request", description = "Approves a pull request on GitHub. Inputs: owner (string), repo (string), pr_number (int). Returns: Status of approval.")
+    public String approvePullRequest(String owner, String repo, int prNumber) {
+        String token = resolveGitPat();
+        if (token == null || token.isEmpty()) {
+            return "Token missing or expired: " + token;
+        }
+        String apiBaseUrl = resolveApiBaseUrl();
+        OkHttpClient client = new OkHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+        String url = apiBaseUrl + "/repos/" + owner + "/" + repo + "/pulls/" + prNumber + "/reviews";
+        String jsonBody = "{\"event\":\"APPROVE\"}";
+        RequestBody body = RequestBody.create(jsonBody, MediaType.parse("application/json"));
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + token)
+                .header("Accept", "application/vnd.github+json")
+                .post(body)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                return "PR approved successfully.";
+            } else {
+                JsonNode error = mapper.readTree(response.body().string());
+                String msg = error.has("message") ? error.get("message").asText() : response.message();
+                return "Error approving PR: " + response.code() + " " + msg;
+            }
+        } catch (Exception e) {
+            return "Error approving PR: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Utility to resolve GitHub owner and repo from env, system property, or application.properties
+     */
+    private String[] resolveOwnerRepo() {
+        String owner = System.getenv("GITHUB_OWNER");
+        if (owner != null && !owner.isEmpty()) {
+            String repo = System.getenv("GITHUB_REPO");
+            if (repo != null && !repo.isEmpty()) return new String[]{owner, repo};
+        }
+        owner = System.getProperty("GITHUB_OWNER");
+        if (owner != null && !owner.isEmpty()) {
+            String repo = System.getProperty("GITHUB_REPO");
+            if (repo != null && !repo.isEmpty()) return new String[]{owner, repo};
+        }
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                owner = prop.getProperty("github.owner");
+                String repo = prop.getProperty("github.repo");
+                if (owner != null && !owner.isEmpty() && repo != null && !repo.isEmpty()) {
+                    return new String[]{owner, repo};
+                }
+            }
+        } catch (IOException ignored) {}
+        // Try to extract from .git/config
+        try {
+            File configFile = new File(".git/config");
+            if (configFile.exists()) {
+                List<String> lines = java.nio.file.Files.readAllLines(configFile.toPath());
+                for (String line : lines) {
+                    line = line.trim();
+                    if (line.startsWith("url = ")) {
+                        String url = line.substring(6).replace(".git", "");
+                        // Support both HTTPS and SSH URLs
+                        String repoPath = url;
+                        if (url.startsWith("https://github.com/")) {
+                            repoPath = url.substring("https://github.com/".length());
+                        } else if (url.startsWith("git@github.com:")) {
+                            repoPath = url.substring("git@github.com:".length());
+                        }
+                        String[] parts = repoPath.split("/");
+                        if (parts.length == 2) {
+                            return new String[]{parts[0], parts[1]};
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    /**
+     * Shows all open PRs for the current repo configured via env, system property, or application.properties
+     * @return Summary of open PRs
+     */
+    @Tool(name = "show_current_repo_prs", description = "Shows all open PRs for the current repo configured via env, system property, or application.properties. Returns: List of PR summaries.")
+    public String showCurrentRepoPRs() {
+        String[] ownerRepo = resolveOwnerRepo();
+        if (ownerRepo == null) {
+            return "Owner or repo not configured in environment, system property, or application.properties.";
+        }
+        return reviewOpenPullRequests(ownerRepo[0], ownerRepo[1]);
     }
 }
