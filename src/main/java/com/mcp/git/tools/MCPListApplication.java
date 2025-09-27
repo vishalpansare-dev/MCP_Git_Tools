@@ -15,8 +15,8 @@ public class MCPListApplication {
 	}
 
 	@Bean
-	public List<ToolCallback> tools(GitTools gitTools, GitTools2 gitTools2) {
-		return List.of(ToolCallbacks.from(gitTools2, gitTools));
+	public List<ToolCallback> tools(GitTools gitTools) {
+		return List.of(ToolCallbacks.from(gitTools));
 	}
 
 }

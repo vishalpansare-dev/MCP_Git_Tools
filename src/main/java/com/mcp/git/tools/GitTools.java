@@ -10,12 +10,17 @@ import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import java.io.File;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import okhttp3.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class GitTools {
 
-    @Value("${git.pat}")
-    private String gitPat;
 
     /**
      * Shows the working tree status
@@ -344,6 +349,254 @@ public class GitTools {
             }
         } catch (Exception e) {
             return List.of("Error listing branches: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Clones a repository to a local path
+     * @param repoUrl URL of the remote repository
+     * @param localPath Path to clone repo on local
+     * @return Status of clone operation
+     */
+    @Tool(name = "git_clone", description = "Clone repo from git. Input: repo_path (string): Path to Git repository localPath (string): path to clone repo on local. Returns: Current status of clone repo.")
+    public String cloneRepository(String repoUrl, String localPath) {
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired";
+        }
+        try {
+            Git.cloneRepository()
+                    .setURI(repoUrl)
+                    .setDirectory(new File(localPath))
+                    .setCredentialsProvider(creds)
+                    .call();
+            return "Cloned successfully";
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired";
+            }
+            return "Error cloning: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Pushes local commits to the remote repository
+     * @param repoPath Path to local Git repository
+     * @param remote Remote name (default: origin)
+     * @param branch Branch name (optional)
+     * @return Status of push operation
+     */
+    @Tool(name = "git_push", description = "Pushes local commits to the remote repository. Inputs: repo_path (string), remote (string, optional), branch (string, optional). Returns: Status of push operation.")
+    public String gitPush(String repoPath, String remote, String branch) {
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired";
+        }
+        try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
+                var pushCmd = git.push().setCredentialsProvider(creds);
+                if (remote != null && !remote.isEmpty()) pushCmd.setRemote(remote);
+                if (branch != null && !branch.isEmpty()) pushCmd.add(branch);
+                var result = pushCmd.call();
+                StringBuilder sb = new StringBuilder();
+                for (var res : result) {
+                    sb.append(res.getMessages()).append("\n");
+                }
+                return sb.length() > 0 ? sb.toString() : "Push completed.";
+            }
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired";
+            }
+            return "Error pushing: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Pulls changes from the remote repository
+     * @param repoPath Path to local Git repository
+     * @param remote Remote name (default: origin)
+     * @param branch Branch name (optional)
+     * @return Status of pull operation
+     */
+    @Tool(name = "git_pull", description = "Pulls changes from the remote repository. Inputs: repo_path (string), remote (string, optional), branch (string, optional). Returns: Status of pull operation.")
+    public String gitPull(String repoPath, String remote, String branch) {
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired";
+        }
+        try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
+                var pullCmd = git.pull().setCredentialsProvider(creds);
+                if (remote != null && !remote.isEmpty()) pullCmd.setRemote(remote);
+                if (branch != null && !branch.isEmpty()) pullCmd.setRemoteBranchName(branch);
+                var result = pullCmd.call();
+                if (result.isSuccessful()) {
+                    return "Pull completed.";
+                } else {
+                    return "Pull failed: " + result.toString();
+                }
+            }
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired";
+            }
+            return "Error pulling: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Fetches changes from the remote repository
+     * @param repoPath Path to local Git repository
+     * @param remote Remote name (default: origin)
+     * @return Status of fetch operation
+     */
+    @Tool(name = "git_fetch", description = "Fetches changes from the remote repository. Inputs: repo_path (string), remote (string, optional). Returns: Status of fetch operation.")
+    public String gitFetch(String repoPath, String remote) {
+        UsernamePasswordCredentialsProvider creds = getCredentialsProvider();
+        if (creds == null) {
+            return "Token missing or expired";
+        }
+        try {
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            try (Git git = new Git(builder.setGitDir(new File(repoPath + "/.git")).readEnvironment().findGitDir().build())) {
+                var fetchCmd = git.fetch().setCredentialsProvider(creds);
+                if (remote != null && !remote.isEmpty()) fetchCmd.setRemote(remote);
+                var result = fetchCmd.call();
+                return "Fetch completed: " + result.getMessages();
+            }
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().toLowerCase().contains("auth")) {
+                return "Token missing or expired";
+            }
+            return "Error fetching: " + e.getMessage();
+        }
+    }
+
+    private String resolveGitPat() {
+        // 1. Check environment variable
+        String token = System.getenv("ACCESS_TOKEN");
+        if (token != null && !token.isEmpty()) return token;
+        // 2. Check system property
+        token = System.getProperty("ACCESS_TOKEN");
+        if (token != null && !token.isEmpty()) return token;
+        // 3. Check application.properties
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                token = prop.getProperty("git.pat");
+                if (token != null && !token.isEmpty()) return token;
+            }
+        } catch (IOException ignored) {}
+        return null;
+    }
+
+    private UsernamePasswordCredentialsProvider getCredentialsProvider() {
+        String pat = resolveGitPat();
+        if (pat == null || pat.isEmpty()) {
+            return null;
+        }
+        return new UsernamePasswordCredentialsProvider(pat, "");
+    }
+
+    private String resolveApiBaseUrl() {
+        String url = System.getenv("GITHUB_API_BASE_URL");
+        if (url != null && !url.isEmpty()) return url;
+        url = System.getProperty("GITHUB_API_BASE_URL");
+        if (url != null && !url.isEmpty()) return url;
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+            if (input != null) {
+                Properties prop = new Properties();
+                prop.load(input);
+                url = prop.getProperty("github.api.base.url");
+                if (url != null && !url.isEmpty()) return url;
+            }
+        } catch (IOException ignored) {}
+        return "https://api.github.com";
+    }
+
+    /**
+     * Reviews open pull requests for a repository and returns a summary for each.
+     * @param owner GitHub repository owner
+     * @param repo GitHub repository name
+     * @return Summary of open PRs (title, author, description, etc.)
+     */
+    @Tool(name = "review_open_pull_requests", description = "Reviews open pull requests for a repository and returns a summary for each. Inputs: owner (string), repo (string). Returns: List of PR summaries.")
+    public String reviewOpenPullRequests(String owner, String repo) {
+        String token = resolveGitPat();
+        if (token == null || token.isEmpty()) {
+            return "Token missing or expired";
+        }
+        String apiBaseUrl = resolveApiBaseUrl();
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(apiBaseUrl + "/repos/" + owner + "/" + repo + "/pulls?state=open")
+                .header("Authorization", "Bearer " + token)
+                .header("Accept", "application/vnd.github+json")
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return "Error fetching PRs: " + response.code() + " " + response.message();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.body().string());
+            StringBuilder sb = new StringBuilder();
+            if (root.isArray()) {
+                for (JsonNode pr : root) {
+                    sb.append("PR #").append(pr.get("number").asInt())
+                      .append(": ").append(pr.get("title").asText())
+                      .append(" by ").append(pr.get("user").get("login").asText()).append("\n");
+                    sb.append("Description: ").append(pr.get("body") != null ? pr.get("body").asText("") : "").append("\n");
+                    sb.append("URL: ").append(pr.get("html_url").asText()).append("\n\n");
+                }
+                if (sb.length() == 0) sb.append("No open PRs found.\n");
+            } else {
+                sb.append("Unexpected response format from GitHub API.");
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return "Error reviewing PRs: " + e.getMessage();
+        }
+    }
+
+    /**
+     * Approves a pull request on GitHub
+     * @param owner GitHub repository owner
+     * @param repo GitHub repository name
+     * @param prNumber Pull request number
+     * @return Status of approval
+     */
+    @Tool(name = "approve_pull_request", description = "Approves a pull request on GitHub. Inputs: owner (string), repo (string), pr_number (int). Returns: Status of approval.")
+    public String approvePullRequest(String owner, String repo, int prNumber) {
+        String token = resolveGitPat();
+        if (token == null || token.isEmpty()) {
+            return "Token missing or expired";
+        }
+        String apiBaseUrl = resolveApiBaseUrl();
+        OkHttpClient client = new OkHttpClient();
+        ObjectMapper mapper = new ObjectMapper();
+        String url = apiBaseUrl + "/repos/" + owner + "/" + repo + "/pulls/" + prNumber + "/reviews";
+        String jsonBody = "{\"event\":\"APPROVE\"}";
+        RequestBody body = RequestBody.create(jsonBody, MediaType.parse("application/json"));
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + token)
+                .header("Accept", "application/vnd.github+json")
+                .post(body)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                return "PR approved successfully.";
+            } else {
+                JsonNode error = mapper.readTree(response.body().string());
+                String msg = error.has("message") ? error.get("message").asText() : response.message();
+                return "Error approving PR: " + response.code() + " " + msg;
+            }
+        } catch (Exception e) {
+            return "Error approving PR: " + e.getMessage();
         }
     }
 }
